@@ -22,3 +22,5 @@ ENTRYPOINT ["STAR_align.pl","-h"]
 
 # Build
 # docker build -t"=ubuntu/star:2.5.2.a" .
+# Test run
+# docker run --rm -v $(pwd):/working-dir -w /working-dir ubuntu/star:2.5.2.a -file_query reads_1.fastq -user_database sorghum_bicolor.genome.fasta -user_annotation Sorghum_bicolor.Sorbi1.31.chr.gtf -file_type "SE"
