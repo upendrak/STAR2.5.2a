@@ -13,7 +13,7 @@ GetOptions( "file_query=s"      => \@file_query,
             "file_query2=s"     => \@file_query2,
             "user_database=s"   => \$user_database_path,
             "user_annotation=s" => \$user_annotation_path,
-	    "file_type=s"       => \$file_type,
+	          "file_type=s"       => \$file_type,
             );
 
 # sanity check for input data
@@ -49,7 +49,7 @@ if ($user_database_path) {
   my $name = basename($database_path, qw/.fa .fas .fasta .fna/);
   print STDERR "STAR-indexing $name\n";
   system "mkdir index";
-  my $STARp = "/usr/bin/STAR";
+  my $STARp = "STAR";
   system "$STARp --runThreadN 4  --runMode genomeGenerate  --genomeDir index --genomeFastaFiles $database_path --sjdbGTFfile $user_annotation_path";
 }
 
@@ -68,20 +68,20 @@ for my $query_file (@file_query) {
             exit 1;
         }
     }
-    my $app  = "/usr/bin/STAR";
+    my $app  = "STAR";
 
     my $format = $file_type;
     
     chomp(my $basename = `basename $query_file`);
     $basename =~ s/\.\S+$//;
 	 if ($format eq 'PE') {
-    my $align_command = "$app $STAR_ARGS --runThreadN 4 --genomeDir index --outFileNamePrefix $basename --readFilesIn $query_file $second_file --sjdbGTFfile $user_annotation_path";
+    my $align_command = "$app $STAR_ARGS --runThreadN 4 --genomeDir index --outFileNamePrefix $basename --readFilesIn $query_file $second_file --readFilesCommand gunzip -c --sjdbGTFfile $user_annotation_path";
     
     report("Executing: $align_command\n");
     system $align_command;
 	}
     elsif($format eq 'SE'){
-	 my $align_command = "$app $STAR_ARGS --runThreadN 4 --genomeDir index --outFileNamePrefix $basename --readFilesIn $query_file --sjdbGTFfile $user_annotation_path";
+	 my $align_command = "$app $STAR_ARGS --runThreadN 4 --genomeDir index --outFileNamePrefix $basename --readFilesIn $query_file --readFilesCommand gunzip -c --sjdbGTFfile $user_annotation_path";
 
     report("Executing: $align_command\n");
     system $align_command;
